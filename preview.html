@@ -1,0 +1,483 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Respira - Saúde Mental</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7f3;
+      color: #263c34;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #356b5b;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
+
+    header h1 {
+      font-size: 30px;
+    }
+
+    header p {
+      opacity: 0.9;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px;
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    nav button {
+      background: #e6eee7;
+      color: #284c3e;
+    }
+
+    nav button:hover,
+    nav button:focus {
+      background: #cfe2d3;
+    }
+
+    main {
+      max-width: 760px;
+      margin: 25px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 12px #263c340c;
+    }
+
+    .hero {
+      background: #dfede3;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 23px;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 12px;
+    }
+
+    .primary {
+      background: #356b5b;
+      color: white;
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .primary:hover {
+      background: #285647;
+    }
+
+    .moods {
+      display: flex;
+      gap: 8px;
+      margin: 15px 0;
+    }
+
+    .moods button {
+      flex: 1;
+      background: #f0f4ef;
+      border: 2px solid transparent;
+      font-size: 25px;
+      padding: 10px 3px;
+    }
+
+    .moods button.selected {
+      border-color: #356b5b;
+      background: #dcece0;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      border: 1px solid #cbd8ce;
+      border-radius: 10px;
+      font: inherit;
+      resize: vertical;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .muted {
+      color: #64776d;
+      font-size: 14px;
+    }
+
+    .entry {
+      padding: 14px 0;
+      border-bottom: 1px solid #e3e9e2;
+      overflow-wrap: anywhere;
+    }
+
+    .entry:last-child {
+      border-bottom: none;
+    }
+
+    .help {
+      background: #fff5ee;
+      border: 1px solid #ead3c4;
+    }
+
+    a {
+      color: #28644e;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px 15px;
+      color: #64776d;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      .moods {
+        gap: 4px;
+      }
+
+      .moods button {
+        font-size: 22px;
+      }
+
+      .card {
+        padding: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>🌿 Respira</h1>
+    <p>Seu espaço de cuidado emocional</p>
+  </header>
+
+  <nav aria-label="Menu principal">
+    <button onclick="mostrar('inicio')">Início</button>
+    <button onclick="mostrar('diario')">Meu diário</button>
+    <button onclick="mostrar('cuidados')">Autocuidado</button>
+    <button onclick="mostrar('ajuda')">Buscar ajuda</button>
+  </nav>
+
+  <main>
+    <section id="inicio">
+      <div class="card hero">
+        <h2>Você não precisa resolver tudo hoje. 💚</h2>
+        <p>
+          Um passo de cada vez. Reserve um momento
+          para reconhecer como você está se sentindo.
+        </p>
+        <button class="primary"
+          onclick="document.getElementById('checkin').scrollIntoView({behavior:'smooth'})">
+          Registrar como estou
+        </button>
+      </div>
+
+      <div class="card" id="checkin">
+        <h2>Como está seu dia?</h2>
+        <p>Escolha a emoção que mais combina com seu momento.</p>
+
+        <div class="moods" id="moods">
+          <button type="button" data-mood="Muito triste"
+            aria-label="Muito triste">😞</button>
+          <button type="button" data-mood="Triste"
+            aria-label="Triste">😔</button>
+          <button type="button" data-mood="Normal"
+            aria-label="Normal">😐</button>
+          <button type="button" data-mood="Bem"
+            aria-label="Bem">🙂</button>
+          <button type="button" data-mood="Muito bem"
+            aria-label="Muito bem">😊</button>
+        </div>
+
+        <label for="anotacao">
+          <strong>Quer escrever como está se sentindo?</strong>
+        </label>
+        <textarea id="anotacao"
+          maxlength="2000"
+          placeholder="Escreva o que quiser, no seu tempo..."></textarea>
+
+        <button class="primary" onclick="registrar()">
+          Salvar registro
+        </button>
+
+        <p id="mensagem" role="status" aria-live="polite"></p>
+        <p class="muted">
+          Seus registros ficam apenas neste navegador.
+          Evite escrever informações pessoais sensíveis.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>🌱 Um pequeno cuidado</h2>
+        <p id="dica">
+          Beba um copo de água e faça uma pausa tranquila.
+        </p>
+        <button onclick="novaDica()">Outra sugestão</button>
+      </div>
+    </section>
+
+    <section id="diario" class="hidden">
+      <div class="card">
+        <h2>Meu diário emocional</h2>
+        <p class="muted">
+          Veja seus registros anteriores neste navegador.
+        </p>
+        <div id="registros"></div>
+        <button onclick="apagarRegistros()">Apagar meu diário</button>
+      </div>
+    </section>
+
+    <section id="cuidados" class="hidden">
+      <div class="card">
+        <h2>🌬️ Pausa para respirar</h2>
+        <p>
+          Sente-se confortavelmente, apoie os pés no chão
+          e respire suavemente, sem forçar.
+        </p>
+        <button class="primary" onclick="respirar()">
+          Começar exercício
+        </button>
+        <p id="respiracao" aria-live="polite"></p>
+      </div>
+
+      <div class="card">
+        <h2>🚶 Um passo de cada vez</h2>
+        <p>
+          Se conseguir, faça um alongamento, tome um banho,
+          caminhe alguns minutos ou converse com alguém
+          de confiança.
+        </p>
+        <p>
+          Você não precisa fazer tudo hoje.
+        </p>
+      </div>
+    </section>
+
+    <section id="ajuda" class="hidden">
+      <div class="card">
+        <h2>Você merece apoio 🤍</h2>
+        <h3>UBS — Posto de saúde</h3>
+        <p>
+          Procure uma UBS para avaliação e orientação
+          sobre o tratamento pelo SUS.
+        </p>
+
+        <h3>CAPS — Saúde mental</h3>
+        <p>
+          Os Centros de Atenção Psicossocial oferecem
+          acolhimento e acompanhamento em saúde mental.
+          Consulte o serviço disponível em sua cidade.
+        </p>
+      </div>
+
+      <div class="card help">
+        <h2>Precisa de ajuda imediata?</h2>
+        <p>
+          Se estiver pensando em se machucar ou tirar
+          a própria vida, procure uma UPA ou pronto-socorro,
+          ligue para o SAMU (192) ou peça a alguém de
+          confiança para ficar com você.
+        </p>
+        <p>
+          <strong>CVV — 188</strong><br>
+          Apoio emocional gratuito, 24 horas por dia.
+        </p>
+        <a href="https://cvv.org.br/"
+           target="_blank" rel="noopener noreferrer">
+          Acessar o site do CVV
+        </a>
+      </div>
+
+      <div class="card">
+        <h3>Importante</h3>
+        <p>
+          O Respira oferece informações e atividades
+          de apoio. Ele não diagnostica depressão e
+          não substitui psicólogos, médicos ou outros
+          profissionais de saúde.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Respira 🌿 — Cuidar de você importa.
+  </footer>
+
+  <script>
+    let emocao = "";
+    let registros = [];
+    let intervalo = null;
+
+    const dicas = [
+      "Beba um copo de água e faça uma pausa tranquila.",
+      "Escolha uma tarefa pequena para hoje.",
+      "Se possível, tome um pouco de ar fresco.",
+      "Converse com alguém em quem você confia.",
+      "Permita-se descansar sem culpa."
+    ];
+
+    document.querySelectorAll("[data-mood]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        emocao = botao.dataset.mood;
+
+        document.querySelectorAll("[data-mood]").forEach(item => {
+          item.classList.toggle("selected", item === botao);
+        });
+      });
+    });
+
+    function mostrar(secao) {
+      ["inicio", "diario", "cuidados", "ajuda"].forEach(id => {
+        document.getElementById(id).classList.toggle(
+          "hidden", id !== secao
+        );
+      });
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (secao === "diario") atualizarDiario();
+    }
+
+    function registrar() {
+      if (!emocao) {
+        document.getElementById("mensagem").textContent =
+          "Escolha uma emoção antes de registrar.";
+        return;
+      }
+
+      registros.unshift({
+        emocao: emocao,
+        anotacao: document.getElementById("anotacao").value,
+        data: new Date().toLocaleString("pt-BR")
+      });
+
+      document.getElementById("anotacao").value = "";
+      document.getElementById("mensagem").textContent =
+        "Registro anotado. Obrigado por cuidar de você. 💚";
+
+      emocao = "";
+
+      document.querySelectorAll("[data-mood]").forEach(botao => {
+        botao.classList.remove("selected");
+      });
+
+      atualizarDiario();
+    }
+
+    function atualizarDiario() {
+      const area = document.getElementById("registros");
+
+      if (registros.length === 0) {
+        area.textContent = "Você ainda não fez nenhum registro.";
+        return;
+      }
+
+      area.replaceChildren();
+
+      registros.forEach(registro => {
+        const item = document.createElement("article");
+        item.className = "entry";
+
+        const titulo = document.createElement("h3");
+        titulo.textContent = registro.emocao;
+
+        const data = document.createElement("p");
+        data.className = "muted";
+        data.textContent = registro.data;
+
+        const anotacao = document.createElement("p");
+        anotacao.textContent = registro.anotacao;
+
+        item.append(titulo, data, anotacao);
+        area.appendChild(item);
+      });
+    }
+
+    function apagarRegistros() {
+      if (!confirm("Deseja apagar todos os registros desta sessão?")) {
+        return;
+      }
+
+      registros = [];
+      atualizarDiario();
+    }
+
+    function novaDica() {
+      const indice = Math.floor(Math.random() * dicas.length);
+      document.getElementById("dica").textContent = dicas[indice];
+    }
+
+    function respirar() {
+      if (intervalo) {
+        clearInterval(intervalo);
+      }
+
+      let segundos = 30;
+      const area = document.getElementById("respiracao");
+
+      area.textContent = "Encontre uma posição confortável.";
+
+      intervalo = setInterval(() => {
+        segundos--;
+
+        if (segundos <= 0) {
+          clearInterval(intervalo);
+          intervalo = null;
+          area.textContent =
+            "Pausa concluída. Volte ao seu dia no seu ritmo. 💚";
+          return;
+        }
+
+        area.textContent =
+          segundos % 8 < 4
+            ? "Inspire suavemente... " + segundos + "s"
+            : "Solte o ar devagar... " + segundos + "s";
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
